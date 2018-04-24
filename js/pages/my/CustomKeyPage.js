@@ -48,6 +48,7 @@ export default class CustomKeyPage extends Component{
     onBack(){
         if (this.changeValues.length===0) {
             this.props.navigator.pop();
+            return;
         }
         Alert.alert(
             '提示',
@@ -59,7 +60,6 @@ export default class CustomKeyPage extends Component{
         )
     }
     renderView(){
-        console.log(this.state.dataArray);
         if(!this.state.dataArray||this.state.dataArray.length===0)return null;
         let len=this.state.dataArray.length;
         let views = [];

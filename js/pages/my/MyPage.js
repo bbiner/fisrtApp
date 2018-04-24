@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import NavigationBar from '../../common/NavigationBar';
 import CustomKeyPage from './CustomKeyPage';
+import SortKeyPage from './SortKeyPage';
 export default class Mypage extends Component{
     constructor(props){
         super(props)
@@ -28,6 +29,16 @@ export default class Mypage extends Component{
                     }}
                 >
                     自定义标签页
+                </Text>
+                <Text style={styles.tips}
+                    onPress={()=>{
+                        this.props.navigator.push({
+                            component:SortKeyPage,
+                            params:{...this.props}
+                        })
+                    }}
+                >
+                    标签排序页
                 </Text>
             </View>
         );

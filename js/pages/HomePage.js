@@ -20,7 +20,7 @@ export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'tb_popular',
+            selectedTab: 'tb_my',
         }
     }
 
@@ -42,7 +42,7 @@ export default class HomePage extends Component {
                         title="趋势"
                         selectedTitleStyle={{color:'yellow'}}
                         renderIcon={() => <Image style={styles.image} source={require('../../res/images/ic_trending.png')}/>}
-                        renderSelectedIcon={() =><Image style={[styles.image,{tintColor:'yellow'}]} source={require('../../res/images/ic_trending.png')}/>}
+                        renderSelectedIcon={() =><Image style={[styles.image,{tintColor:'red'}]} source={require('../../res/images/ic_trending.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_trending'})}>
                         <AsyncStorageTest/>
                     </TabNavigator.Item>
