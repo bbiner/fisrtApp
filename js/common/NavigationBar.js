@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
+        flexDirection: 'row',
         color: '#FFFFFF',
     },
     navBarButton: {

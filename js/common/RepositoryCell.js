@@ -13,7 +13,9 @@ export default class RepositoryCell extends Component{
     }
     render(){
         return(
-            <TouchableOpacity sytle={styles.container}>
+            <TouchableOpacity sytle={styles.container}
+                onPress={this.props.onSelect}
+            >
                 <View style={styles.cell_container}>
                     <Text style={styles.title}>{this.props.rowData.full_name}</Text>
                     <Text style={styles.description}>{this.props.rowData.description}</Text>

@@ -6,19 +6,21 @@ import {
     View,
     TextInput,
     ListView,
-    RefreshControl
+    RefreshControl,
+    DeviceEventEmitter
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigationBar';
 import DataRepository from '../expand/dao/DataRepository';
 import RepositoryCell from '../common/RepositoryCell';
 import LanguageDao,{FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+import RepositoryDetail from '../pages/RepositoryDetail';
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR='&sort=stars';
 export default class PopularPage extends Component{
     constructor(props){
         super(props);
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
         this.state={
             languages: []
         }
@@ -46,7 +48,7 @@ export default class PopularPage extends Component{
             renderTabBar={()=><ScrollableTabBar/>}
         >
             {this.state.languages.map((result,index)=>{
-                return result.checked?<PopularTab key={index} tabLabel={result.name}>
+                return result.checked?<PopularTab key={index} tabLabel={result.name} {...this.props}>
                 </PopularTab>:null;
             })}
         </ScrollableTabView>:null;
@@ -79,26 +81,50 @@ class PopularTab extends Component{
         this.setState({
            isLoading:true
         });
-        let url = this.getUrl(this.text);
-        this.dataRespository.fetchNetRepository(url)
+        let url = this.getUrl(this.props.tabLabel);
+        this.dataRespository.fetchRepository(url)
             .then(result=>{
-                console.log(result.items);
+                let items = result&&result.items? result.items:result?result:[];
                 this.setState({
-                    // result:result.items
-                    dataSource:this.state.dataSource.cloneWithRows(result.items),
+                    dataSource:this.state.dataSource.cloneWithRows(items),
                     isLoading: false
-                })
+                });
+                if (result&&result.update_date&&!this.dataRespository.checkData(result.update_date)){
+                    DeviceEventEmitter.emit('showToast', '数据过时');
+                    return this.dataRespository.fetchNetRepository(url)
+                } else {
+                    DeviceEventEmitter.emit('showToast','显示缓存数据')
+                }
+            })
+            .then(items=>{
+                if (!items||items.length===0)return;
+                this.setState({
+                    dataSource:this.state.dataSource.cloneWithRows(items),
+                });
+                DeviceEventEmitter.emit('showToast','显示网络数据')
             })
             .catch(error => {
                 console.log(error);
             })
     }
     getUrl(key){
-        return URL+this.props.tabLabel+QUERY_STR;
+        return URL+key+QUERY_STR;
+    }
+    onSelectRepository(rowData) {
+        this.props.navigator.push({
+            component: RepositoryDetail,
+            params:{
+                item:rowData,
+                ...this.props
+            }
+        })
     }
     renderRow(rowData){
         return (
-            <RepositoryCell rowData={rowData}/>
+            <RepositoryCell rowData={rowData}
+                            key={rowData.id}
+                            onSelect={() => this.onSelectRepository(rowData)}
+            />
         )
     }
     render(){

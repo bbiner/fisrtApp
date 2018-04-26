@@ -10,12 +10,14 @@ import {
     Text,
     Navigator,
     Image,
-    View
+    View,
+    DeviceEventEmitter
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import PopularPage from './PopularPage';
 import AsyncStorageTest from '../../AsyncStorageTest';
 import MyPage from './my/MyPage';
+import Toast,{DURATION} from 'react-native-easy-toast';
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +25,14 @@ export default class HomePage extends Component {
             selectedTab: 'tb_my',
         }
     }
-
+    componentDidMount(){
+        this.listener = DeviceEventEmitter.addListener('showToast', (text)=>{
+            this.toast.show(text, DURATION.LENGTH_SHORT);
+        });
+    }
+    componentWillUnmount(){
+        this.listener&&this.listener.remove();
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -35,7 +44,7 @@ export default class HomePage extends Component {
                         renderIcon={() => <Image style={styles.image} source={require('../../res/images/ic_polular.png')}/>}
                         renderSelectedIcon={() =><Image style={[styles.image,{tintColor:'#2196F3'}]} source={require('../../res/images/ic_polular.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_popular'})}>
-                        <PopularPage/>
+                        <PopularPage {...this.props}/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_trending'}
@@ -65,6 +74,7 @@ export default class HomePage extends Component {
                         <MyPage {...this.props}/>
                     </TabNavigator.Item>
                 </TabNavigator>
+                <Toast ref={toast=>this.toast=toast}/>
             </View>
         );
     }

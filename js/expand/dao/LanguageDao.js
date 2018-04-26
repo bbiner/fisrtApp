@@ -35,4 +35,8 @@ export default class LanguageDao{
 
         })
     }
+
+    remove(){
+        AsyncStorage.removeItem(this.flag,(error)=>{})
+    }
 }
