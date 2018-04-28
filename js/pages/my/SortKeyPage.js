@@ -98,7 +98,7 @@ export default class SortKeyPage extends Component{
                     data={this.state.checkedArray}
                     order= {Object.keys(this.state.checkedArray)}
                     onRowMoved={e => {
-                        this.state.checkedAr.ray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
+                        this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
                     }}
                     renderRow={row => <SortCell data={row}/>}
                 />

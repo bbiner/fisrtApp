@@ -11,10 +11,12 @@ import ViewUtils from '../util/ViewUtils';
 export default class RepositoryDetail extends Component{
     constructor(props){
         super(props);
+        this.url = this.props.item.html_url;
+        var title = this.props.item.full_name;
         this.state = {
-            url: this.props.item.html_url,
+            url: this.url,
             canGoBack: false,
-            title: this.props.item.full_name
+            title: title
         }
     }
     onBack() {
@@ -39,9 +41,9 @@ export default class RepositoryDetail extends Component{
                 />
                 <WebView
                     ref={webView=>this.webView=webView}
-                    startInloadingState={true}
                     onNavigationStateChange={e=>this.onNavigationStateChange(e)}
                     source={{uri:this.state.url}}
+                    startInLoadingState={true}
                 />
             </View>
         )
